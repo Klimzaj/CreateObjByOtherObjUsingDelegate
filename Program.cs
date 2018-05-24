@@ -42,6 +42,7 @@ namespace Zad1._1
         public void Subscribe(Tworca _t)
         {
             _t.OnTworcaChange += new Tworca.TworcaChangeHandler(NewObserwator);
+            _t.OnTworcaChangeWypisz += new Tworca.TworcaChangeHandlerWypisz(WypiszSasiadow);
 
         }
         public Obserwator(string _name, double _x, double _y,int _count)
@@ -65,10 +66,10 @@ namespace Zad1._1
             {
                 sasiedzi.RemoveAt(sasiedzi.Count-1);
             }
-            // Console.WriteLine("cos robie"+count);
-            WypiszSasiadow();
+            // Console.WriteLine("Dodano obserwatora: "+count);
+            // WypiszSasiadow();
         }
-        public void WypiszSasiadow()
+        public void WypiszSasiadow(object _obj)
         {
             Console.Write("Jestem "+name+" a to moi sasiedzi: ");
             foreach (var i in sasiedzi)
@@ -96,7 +97,9 @@ namespace Zad1._1
             listaObs = new List<Obserwator>();
         }
         public delegate void TworcaChangeHandler(object _t,InfoEventArgs _info);
+        public delegate void TworcaChangeHandlerWypisz(object _t);
         public event TworcaChangeHandler OnTworcaChange;
+        public event TworcaChangeHandlerWypisz OnTworcaChangeWypisz;
         public void Run()
         {
             for(;;)
@@ -117,6 +120,11 @@ namespace Zad1._1
                     if(OnTworcaChange != null)
                     {
                         OnTworcaChange(this,infoEvent);
+                    }
+                    Thread.Sleep(5);
+                    if(OnTworcaChangeWypisz != null)
+                    {
+                        OnTworcaChangeWypisz(this);
                     }
                     newObj.Subscribe(this);
                 }
